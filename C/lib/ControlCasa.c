@@ -3,16 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define LED_COCINA 1
-#define LED_CUARTO_A 2
-#define LED_SALA 3
-#define LED_CUARTO_B 4
-#define LED_COMEDOR 5
-#define PUERTA_PRINC 6
-#define PUERTA_TRAS 7
-#define PUERTA_CUARTO_A 8
-#define PUERTA_CUARTO_B 9
+#include <unistd.h>
+#include <fcntl.h>
 
 int GPIOs[9] = {LED_COCINA, LED_CUARTO_A, LED_SALA, LED_CUARTO_B, LED_COMEDOR,
   PUERTA_PRINC, PUERTA_TRAS, PUERTA_CUARTO_A, PUERTA_CUARTO_B};
@@ -159,7 +151,25 @@ int leer_log (){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int reservar_GPIO (int pin, int mode) {
+  /* Reserve (export) the GPIO: */
+  int fd;
+  char buf[MAXBUF];
+  fd = open("/sys/class/gpio/export", O_WRONLY);
+  sprintf(buf, "%d", pin);
+  write(fd, buf, strlen(buf));
+  close(fd);
 
+  /* Set the direction in the GPIO folder just created: */
+  sprintf(buf, "/sys/class/gpio/gpio%d/direction", pin);
+  fd = open(buf, O_WRONLY);
+
+  if (mode == OUT) { // Set out direction
+    write(fd, "out", 3);
+  }
+  else { // Set in direction
+    write(fd, "in", 2);
+  }
+  close(fd);
 }
 
 /**
@@ -169,7 +179,19 @@ int reservar_GPIO (int pin, int mode) {
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int escribir_GPIO (int pin, int value) {
+  int fd;
+  char buf[MAXBUF];
+  sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
+  fd = open(buf, O_WRONLY);
 
+  if (value) { // Set GPIO high status
+    write(fd, "1", 1);
+  }
+  else { // Set GPIO low status
+    write(fd, "0", 1);
+  }
+
+  close(fd);
 }
 
 /**
@@ -178,7 +200,14 @@ int escribir_GPIO (int pin, int value) {
  * @return 0 si lee LOW, 1 si lee HIGH, -1 si hubo algun error
  */
 int leer_GPIO (int pin) {
-
+  char value;
+  int fd;
+  char buf[MAXBUF];
+  sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
+  fd = open(buf, O_RDONLY);
+  read(fd, &value, 1);
+  close(fd);
+  return value;
 }
 
 /**
@@ -187,5 +216,10 @@ int leer_GPIO (int pin) {
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int liberar_GPIO (int pin) {
-
+  int fd;
+  char buf[MAXBUF];
+  fd = open("/sys/class/gpio/unexport", O_WRONLY);
+  sprintf(buf, "%d", pin);
+  write(fd, buf, strlen(buf));
+  close(fd);
 }
