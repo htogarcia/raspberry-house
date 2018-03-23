@@ -4,12 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-order:
-    LED_COCINA, LED_CUARTO_A, LED_SALA 2, LED_CUARTO_B, LED_COMEDOR,
-    PUERTA_PRINC, PUERTA_TRAS, PUERTA_CUARTO_A, PUERTA_CUARTO_B
-*/
-int GPIOs[9] = {1,2,3,4,5,6,7,8};
+#define LED_COCINA 1
+#define LED_CUARTO_A 2
+#define LED_SALA 3
+#define LED_CUARTO_B 4
+#define LED_COMEDOR 5
+#define PUERTA_PRINC 6
+#define PUERTA_TRAS 7
+#define PUERTA_CUARTO_A 8
+#define PUERTA_CUARTO_B 9
+
+int GPIOs[9] = {LED_COCINA, LED_CUARTO_A, LED_SALA, LED_CUARTO_B, LED_COMEDOR,
+  PUERTA_PRINC, PUERTA_TRAS, PUERTA_CUARTO_A, PUERTA_CUARTO_B};
 
 int Casa[9];
 
@@ -18,7 +24,11 @@ int Casa[9];
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int apagar_casa (){
-
+  for (int i=0; i<5; i++) {
+    escribir_GPIO(GPIOs[i], 0);
+    Casa[i] = 0;
+  }
+  escribir_log();
 }
 
 /**
@@ -26,7 +36,11 @@ int apagar_casa (){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int encender_casa (){
-
+  for (int i=0; i<5; i++) {
+    escribir_GPIO(GPIOs[i], 1);
+    Casa[i] = 1;
+  }
+  escribir_log();
 }
 
 /**
@@ -35,9 +49,14 @@ int encender_casa (){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int encender_led (int id_led) {
-  // writeGPIO (id_led, 1)
-  // infoCasa.id_led = 1
-  // escribir_log ()
+  for (int i=0; i<5; i++) {
+    if (GPIOs[i]==id_led) {
+      escribir_GPIO (GPIOs[i],1);
+      Casa[i] = 1;
+      break;
+    }
+  }
+  escribir_log();
 }
 
 /**
@@ -46,9 +65,14 @@ int encender_led (int id_led) {
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int apagar_led (int id_led){
-  // writeGPIO (id_led, 0)
-  // infoCasa.id_led = 0
-  // escribir_log ()
+  for (int i=0; i<5; i++) {
+    if (GPIOs[i]==id_led) {
+      escribir_GPIO (GPIOs[i],0);
+      Casa[i] = 0;
+      break;
+    }
+  }
+  escribir_log();
 }
 
 /**
@@ -57,9 +81,15 @@ int apagar_led (int id_led){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int estado_puerta (int id_puerta){
-  // val = readGPIO (id_led)
-  // infoCasa.id_puerta = val
-  // escribir_log ()
+  for (int i=5; i<9; i++) {
+    if (GPIOs[i]==id_puerta) {
+      int val = leer_GPIO (GPIOs[i]);
+      Casa[i] = val;
+      break;
+    }
+  }
+  escribir_log();
+
 }
 
 /**
@@ -128,7 +158,7 @@ int leer_log (){
  * @param mode 0 si se quiere usar como entrada 1 como salida
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
-int setGPIO (int pin, int mode) {
+int reservar_GPIO (int pin, int mode) {
 
 }
 
@@ -138,7 +168,7 @@ int setGPIO (int pin, int mode) {
  * @param value valor que se va a escribir en el pin: 1 para HIGH, 0 para LOW
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
-int writeGPIO (int pin, int value) {
+int escribir_GPIO (int pin, int value) {
 
 }
 
@@ -147,7 +177,7 @@ int writeGPIO (int pin, int value) {
  * @param pin GPIO que se va a leer
  * @return 0 si lee LOW, 1 si lee HIGH, -1 si hubo algun error
  */
-int readGPIO (int pin) {
+int leer_GPIO (int pin) {
 
 }
 
@@ -156,6 +186,6 @@ int readGPIO (int pin) {
  * @param pin GPIO que se va a liberar
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
-int closeGPIO (int pin) {
+int liberar_GPIO (int pin) {
 
 }

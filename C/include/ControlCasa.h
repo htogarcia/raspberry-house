@@ -16,9 +16,10 @@ int estado_puerta (int);
 int tomar_foto();
 int escribir_log ();
 int leer_log ();
-int setGPIO (int, int);
-int writeGPIO (int, int);
-int readGPIO (int);
-int closeGPIO (int);
+int reservar_GPIO (int, int);
+int escribir_GPIO (int, int);
+int leer_GPIO (int);
+int liberar_GPIO (int);
+
 
 #endif
