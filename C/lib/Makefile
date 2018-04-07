@@ -15,7 +15,15 @@ static:
 		ar rv $(LOPR).a $(OPR).o
 		ranlib $(LOPR).a
 		rm $(OPR).o
-		echo "\n[***Prueba unitaria 1] Biblioteca creada con exito"
+		echo "\n[***Prueba unitaria 1] Biblioteca creada con exito\n"
+
+dynamic:
+		$(CC) ${SYSROOT} -c $(SRC) ${INCLUDE} -mfloat-abi=hard
+		ld -o $(LOPR).so $(OPR).o -shared
+		rm $(OPR).o
+		echo "\n[***Prueba unitaria 1] Biblioteca creada con exito\n"
+
 
 clean:
+		# rm $(LOPR).so
 		rm $(LOPR).a

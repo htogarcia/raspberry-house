@@ -1,3 +1,5 @@
+# source /opt/poky/2.3.3/environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi
+
 MAKE = make
 LIB = lib
 SRC = src

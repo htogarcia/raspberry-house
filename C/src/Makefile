@@ -10,8 +10,11 @@ SHARED = ../lib/libControlCasa
 all: main
 
 main:
+		# static
 		$(CC) ${SYSROOT} -o $(DST) $(SRC).c $(INCLUDE) $(SHARED).a -mfloat-abi=hard
-		echo "\n[***Prueba unitaria 2] Ejecutable creado con exito"
+		# dynamic
+		# $(CC) $(SYSROOT) -o $(DST) $(SRC).c $(INCLUDE) $(LIB) -mfloat-abi=hard -loperaciones
+		echo "\n[***Prueba unitaria 2] Ejecutable creado con exito\n"
 
 clean:
 		rm $(DST)*

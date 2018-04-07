@@ -6,7 +6,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-int GPIOs[9] = {LED_COCINA, LED_CUARTO_A, LED_SALA, LED_CUARTO_B, LED_COMEDOR,
+char* NAMES[9] = {"LED_COCINA", "LED_CUARTO_A", "LED_SALA", "LED_CUARTO_B", "LED_BANO",
+  "PUERTA_PRINC", "PUERTA_TRAS", "PUERTA_CUARTO_A", "PUERTA_CUARTO_B"};
+
+int GPIOs[9] = {LED_COCINA, LED_CUARTO_A, LED_SALA, LED_CUARTO_B, LED_BANO,
   PUERTA_PRINC, PUERTA_TRAS, PUERTA_CUARTO_A, PUERTA_CUARTO_B};
 
 int Casa[9];
@@ -16,11 +19,14 @@ int Casa[9];
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int apagar_casa (){
+  leer_log ();
   for (int i=0; i<5; i++) {
+    reservar_GPIO (GPIOs[i], OUT);
     escribir_GPIO(GPIOs[i], 0);
     Casa[i] = 0;
   }
   escribir_log();
+  printf("Apagar todos los leds\n");
 }
 
 /**
@@ -28,11 +34,14 @@ int apagar_casa (){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int encender_casa (){
+  leer_log ();
   for (int i=0; i<5; i++) {
+    reservar_GPIO (GPIOs[i], OUT);
     escribir_GPIO(GPIOs[i], 1);
     Casa[i] = 1;
   }
   escribir_log();
+  printf("Encender todos los leds\n");
 }
 
 /**
@@ -41,14 +50,18 @@ int encender_casa (){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int encender_led (int id_led) {
+  leer_log ();
+  reservar_GPIO (id_led, OUT);
   for (int i=0; i<5; i++) {
     if (GPIOs[i]==id_led) {
       escribir_GPIO (GPIOs[i],1);
+      printf("Encender el led %s\n", NAMES[i]);
       Casa[i] = 1;
       break;
     }
   }
   escribir_log();
+  //liberar_GPIO (id_led);
 }
 
 /**
@@ -57,14 +70,33 @@ int encender_led (int id_led) {
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int apagar_led (int id_led){
+  leer_log ();
+  reservar_GPIO (id_led, OUT);
   for (int i=0; i<5; i++) {
     if (GPIOs[i]==id_led) {
       escribir_GPIO (GPIOs[i],0);
+      printf("Apagar el led %s\n", NAMES[i]);
       Casa[i] = 0;
       break;
     }
   }
   escribir_log();
+
+  //liberar_GPIO (id_led);
+}
+
+/**
+ * Lee el estado de un led desde el log
+ * @param id_led identificador del led que se quiere consultar
+ * @return estado del led
+ */
+int estado_led (int id_led) {
+  leer_log ();
+  for (int i=0; i<5; i++) {
+    if (GPIOs[i]==id_led) {
+      return Casa[i];
+    }
+  }
 }
 
 /**
@@ -73,15 +105,19 @@ int apagar_led (int id_led){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int estado_puerta (int id_puerta){
+  leer_log ();
+  int state = 0;
+  reservar_GPIO (id_puerta, IN);
   for (int i=5; i<9; i++) {
     if (GPIOs[i]==id_puerta) {
       int val = leer_GPIO (GPIOs[i]);
       Casa[i] = val;
+      state = val;
       break;
     }
   }
   escribir_log();
-
+  return state;
 }
 
 /**
@@ -97,7 +133,7 @@ int tomar_foto(){
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
 int escribir_log (){
-  FILE *f = fopen("config.conf", "w");
+  FILE *f = fopen(FILENAME, "w");
   if (f == NULL)
   {
     printf("Error opening file!\n");
@@ -108,7 +144,7 @@ int escribir_log (){
   fprintf(f, "LED_CUARTO_A = %d\n", Casa[1]);
   fprintf(f, "LED_SALA = %d\n", Casa[2]);
   fprintf(f, "LED_CUARTO_B = %d\n", Casa[3]);
-  fprintf(f, "LED_COMEDOR = %d\n", Casa[4]);
+  fprintf(f, "LED_BANO = %d\n", Casa[4]);
   fprintf(f, "PUERTA_PRINCIPAL = %d\n", Casa[5]);
   fprintf(f, "PUERTA_PATIO = %d\n", Casa[6]);
   fprintf(f, "PUERTA_CUARTO_A = %d\n", Casa[7]);
