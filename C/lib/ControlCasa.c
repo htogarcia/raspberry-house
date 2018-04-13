@@ -243,7 +243,7 @@ int leer_GPIO (int pin) {
   fd = open(buf, O_RDONLY);
   read(fd, &value, 1);
   close(fd);
-  return value;
+  return (value == 49 ? 1 : 0);
 }
 
 /**

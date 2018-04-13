@@ -6,10 +6,10 @@
 #define LED_SALA 16
 #define LED_CUARTO_B 18
 #define LED_BANO 19
-#define PUERTA_PRINC 5
-#define PUERTA_TRAS 6
-#define PUERTA_CUARTO_A 7
-#define PUERTA_CUARTO_B 8
+#define PUERTA_PRINC 21
+#define PUERTA_TRAS 22
+#define PUERTA_CUARTO_A 23
+#define PUERTA_CUARTO_B 24
 
 #define IN 0
 #define OUT 1

@@ -11,9 +11,10 @@ all: main
 
 main:
 		# static
-		$(CC) ${SYSROOT} -o $(DST) $(SRC).c $(INCLUDE) $(SHARED).a -mfloat-abi=hard
+		# $(CC) ${SYSROOT} -o $(DST) $(SRC).c $(INCLUDE) $(SHARED).a -mfloat-abi=hard
 		# dynamic
-		# $(CC) $(SYSROOT) -o $(DST) $(SRC).c $(INCLUDE) $(LIB) -mfloat-abi=hard -loperaciones
+		$(CC) $(SYSROOT) -o $(DST) $(SRC).c $(INCLUDE) $(LIB) -lControlCasa -fPIC -mfloat-abi=hard
+		# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH: 
 		echo "\n[***Prueba unitaria 2] Ejecutable creado con exito\n"
 
 clean:
