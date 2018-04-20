@@ -4,3 +4,7 @@ Con los siguientes comandos como root:
 
 #mkdir -p /media/yocto/raspi
 #mount /dev/sdX /media/yocto/raspi
+
+Para conocer la IP del raspberry se puede ejecutar el comando:
+
+#nmap -sn rangoIP  ( por ejemplo 192.168.1.0/24)
