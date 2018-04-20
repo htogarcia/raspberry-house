@@ -1,0 +1,6 @@
+Para ejecutar el script debe montar la tarjeta de memoria en la dirección /media/yocto/raspi
+
+Con los siguientes comandos como root:
+
+#mkdir -p /media/yocto/raspi
+#mount /dev/sdX /media/yocto/raspi
