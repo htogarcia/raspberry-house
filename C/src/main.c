@@ -40,6 +40,12 @@ int main (int argc, const char* argv[]) {
     else if (!strcmp(argv[arg], "ENCENDER_CASA")) {
       encender_casa();
     }
+    else if (!strcmp(argv[arg], "RESERVAR")) {
+      reservar_todo();
+    }
+    else if (!strcmp(argv[arg], "LIBERAR")) {
+      liberar_todo();
+    }
     else {
       printf("[Error] No existe ningun objeto %s\n", argv[arg]);
     }

@@ -21,7 +21,6 @@ int Casa[9];
 int apagar_casa (){
   leer_log ();
   for (int i=0; i<5; i++) {
-    reservar_GPIO (GPIOs[i], OUT);
     escribir_GPIO(GPIOs[i], 0);
     Casa[i] = 0;
   }
@@ -36,7 +35,6 @@ int apagar_casa (){
 int encender_casa (){
   leer_log ();
   for (int i=0; i<5; i++) {
-    reservar_GPIO (GPIOs[i], OUT);
     escribir_GPIO(GPIOs[i], 1);
     Casa[i] = 1;
   }
@@ -51,7 +49,6 @@ int encender_casa (){
  */
 int encender_led (int id_led) {
   leer_log ();
-  reservar_GPIO (id_led, OUT);
   for (int i=0; i<5; i++) {
     if (GPIOs[i]==id_led) {
       escribir_GPIO (GPIOs[i],1);
@@ -71,7 +68,6 @@ int encender_led (int id_led) {
  */
 int apagar_led (int id_led){
   leer_log ();
-  reservar_GPIO (id_led, OUT);
   for (int i=0; i<5; i++) {
     if (GPIOs[i]==id_led) {
       escribir_GPIO (GPIOs[i],0);
@@ -107,7 +103,6 @@ int estado_led (int id_led) {
 int estado_puerta (int id_puerta){
   leer_log ();
   int state = 0;
-  reservar_GPIO (id_puerta, IN);
   for (int i=5; i<9; i++) {
     if (GPIOs[i]==id_puerta) {
       int val = leer_GPIO (GPIOs[i]);
@@ -119,13 +114,30 @@ int estado_puerta (int id_puerta){
   escribir_log();
   return state;
 }
-
 /**
- * Captura una imagen y la guarda con el nombre capture.png
+ * Reserva todos los pines de la casa.
  * @return 0 si todo se hizo bien, -1 si hubo algun error
  */
-int tomar_foto(){
+int reservar_todo () {
+  for (int i=0; i<5; i++) {
+    reservar_GPIO (GPIOs[i], OUT);
+  }
+  for (int i=5; i<9; i++) {
+    reservar_GPIO (GPIOs[i], IN);
+  }
+}
 
+/**
+ * Libera todos los pines de la casa
+ * @return 0 si todo se hizo bien, -1 si hubo algun error
+ */
+int liberar_todo () {
+  for (int i=0; i<5; i++) {
+    liberar_GPIO (GPIOs[i], OUT);
+  }
+  for (int i=5; i<9; i++) {
+    liberar_GPIO (GPIOs[i], IN);
+  }
 }
 
 /**

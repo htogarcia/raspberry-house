@@ -24,7 +24,10 @@ int encender_led (int);
 int apagar_led (int);
 int estado_led (int);
 int estado_puerta (int);
-int tomar_foto();
+
+int reservar_todo ();
+int liberar_todo ();
+
 int escribir_log ();
 int leer_log ();
 int reservar_GPIO (int, int);
